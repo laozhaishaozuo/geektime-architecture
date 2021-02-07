@@ -1,0 +1,48 @@
+@startuml
+participant client1 as "应用服务器1"
+participant client2 as "应用服务器2"
+participant configServer as "管理中心服务器" 
+participant KvSever1 as "数据服务器1"
+participant KvSever2 as "数据服务器2"  
+participant logSever as "临时服务器"  
+
+client1 -> configServer : 获取集群信息
+activate configServer
+
+configServer -> client1 : 返回集群信息
+deactivate configServer
+
+client1 -> client1 : 路由计算
+
+client1 -> KvSever1 : 写入
+activate KvSever1
+KvSever1 -> client1 : 写入成功
+deactivate KvSever1
+
+client1 ->x KvSever2 : 写入失败
+
+client1 -> configServer : 3次写入失败
+activate configServer
+
+configServer ->x KvSever2 : 3次写入失败
+
+configServer -> client1 : logSever地址
+deactivate configServer
+
+client1 -> logSever : 写入
+activate logSever
+logSever -> client1 : 写入成功
+deactivate logSever
+
+client1 -> KvSever1 : 读取
+activate KvSever1
+KvSever1 -> client1 : 返回数据
+deactivate KvSever1
+
+
+client2 -> configServer : 获取集群信息
+activate configServer
+
+configServer -> client2 : 返回集群信息，不包括服务器2，包括临时服务器
+deactivate configServer
+@enduml

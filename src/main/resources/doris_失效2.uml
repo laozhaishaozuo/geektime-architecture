@@ -1,0 +1,56 @@
+@startuml
+participant client1 as "应用服务器"
+participant configServer as "管理中心服务器" 
+participant KvSever1 as "数据服务器1"
+participant KvSever2 as "数据服务器2"  
+participant logSever as "临时服务器"  
+
+KvSever2 -> configServer : 我上线了
+activate configServer
+configServer -> KvSever2 : 写入
+activate KvSever2
+KvSever2 -> configServer : 写入成功
+deactivate KvSever2
+deactivate configServer
+
+configServer -> logSever : 节点2 上线
+
+logSever -> KvSever2 : 开始恢复数据
+activate KvSever2
+
+client1 -> configServer : 获取集群信息
+activate configServer
+
+configServer -> client1 : 返回集群信息，服务器2只写不读
+deactivate configServer
+
+client1 -> client1 : 路由计算
+
+client1 -> KvSever1 : 写入
+activate KvSever1
+KvSever1 -> client1 : 写入成功
+deactivate KvSever1
+
+
+client1 -> KvSever2 : 写入
+KvSever2 -> client1 : 写入成功
+logSever -> configServer : 恢复完成
+deactivate KvSever2
+
+client1 -> configServer : 获取集群信息
+activate configServer
+
+configServer -> client1 : 返回集群信息
+deactivate configServer
+
+client1 -> KvSever1 : 写入
+activate KvSever1
+KvSever1 -> client1 : 写入成功
+deactivate KvSever1
+
+
+client1 -> KvSever2 : 写入
+activate KvSever2
+KvSever2 -> client1 : 写入成功
+deactivate KvSever2
+@enduml
