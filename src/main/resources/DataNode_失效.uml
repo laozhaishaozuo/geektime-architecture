@@ -1,0 +1,30 @@
+@startuml
+participant NameNode
+participant DataNode1
+participant DataNode2
+participant DataNode3
+participant DataNode4
+
+DataNode1 ->x NameNode : 心跳失效
+DataNode2 -> NameNode : 心跳检测
+DataNode3 -> NameNode : 心跳检测
+DataNode4 -> NameNode : 心跳检测
+
+
+NameNode -> NameNode : 确定DataNode1失效，确定其他存储数据的节点
+
+DataNode2 -> NameNode : 心跳检测
+activate NameNode
+NameNode -> DataNode2 : 需要复制数据
+deactivate NameNode
+DataNode2 -> DataNode3 : 复制数据
+
+DataNode3 -> NameNode : 心跳检测
+activate NameNode
+NameNode -> DataNode3 : 复制数据
+deactivate NameNode
+DataNode3 -> DataNode4 : 复制数据
+
+DataNode4 -> NameNode : 心跳检测，汇报状态
+
+@enduml
