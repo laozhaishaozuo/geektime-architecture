@@ -1,0 +1,34 @@
+@startuml
+participant Consumer as "服务消费方"
+participant Provider as "服务提供方"
+participant Registry as "注册中心" 
+
+
+Provider -> Registry: 注册
+activate Provider
+activate Registry
+note left
+向注册中心注册自己提供的服务，
+包括名称、方法等
+end note
+Registry -> Provider: 注册成功
+deactivate Provider
+deactivate Registry
+
+Consumer -> Registry: 请求服务列表
+activate Consumer
+activate Registry
+Registry -> Consumer: 返回服务列表
+deactivate Consumer
+deactivate Registry
+
+Consumer -> Consumer : 调用dubbo接口
+
+Consumer -> Provider : 通过dubbo请求服务
+activate Consumer
+activate Provider
+Provider -> Provider: 服务调用线程处理业务
+Provider -> Consumer : 返回调用结果
+deactivate Provider
+deactivate Consumer
+@enduml
