@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+actor "用户" as user 
+actor "快递员"  as courier
+' actor "系统" as system
+rectangle userApp {
+  usecase "创建订单" as createOrder
+  usecase "支付" as pay
+  usecase "查看订单" as getOrders
+  usecase "修改个人信息" as updateUserInfo
+}
+rectangle courierApp{
+  usecase "抢单" as qiangDan
+  usecase "取件" as accept
+  usecase "上报位置信息" as refreshLoc
+}
+rectangle systems{
+	usecase  "修改订单状态" as updateOrderStatus
+	usecase  "订单匹配" as matching
+	usecase  "订单推送" as publishOrder
+}
+user --> createOrder : 下单
+createOrder --> updateOrderStatus : 已创建
+user --> pay : 支付
+pay --> updateOrderStatus : 已支付
+user --> getOrders : 查看订单信息
+user --> updateUserInfo 
+
+courier --> refreshLoc
+courier --> qiangDan
+courier --> accept
+accept --> updateOrderStatus : 已收件
+
+matching .> publishOrder
+refreshLoc .> publishOrder
+publishOrder --> qiangDan
+qiangDan --> updateOrderStatus : 已接单
+
+@enduml

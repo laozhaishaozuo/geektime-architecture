@@ -1,0 +1,39 @@
+@startuml
+actor "用户App" as userApp
+actor "快递员App" as courierApp
+node nginx [
+	nginx服务器
+]
+userApp -->  nginx
+courierApp -->  nginx
+
+node api [
+	api网关
+]
+nginx -->  api
+
+node 应用服务器{
+	node orders[
+		订单系统
+	]
+	node locations[
+		位置系统
+	]
+	node message[
+		消息系统
+	]
+	node match[
+		配单系统
+	]
+}
+
+api --> 应用服务器
+
+
+database "Mysql主" as MysqlMaster
+database "Mysql从" as MysqlSlave1
+database "Mysql从" as MysqlSlave2
+应用服务器 --> MysqlMaster
+MysqlMaster -> MysqlSlave1
+MysqlMaster -> MysqlSlave2
+@enduml

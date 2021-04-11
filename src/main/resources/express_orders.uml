@@ -1,0 +1,30 @@
+@startuml
+participant  "第三方支付系统" as zhifu 
+participant  "用户" as user 
+participant  "系统" as system
+participant "快递员"  as courier
+
+user --> system : 下单
+system -> system: 创建订单，订单状态已创建
+activate system
+system --> user : 
+deactivate system
+
+user -> zhifu: 支付
+activate zhifu
+zhifu --> system : 订单状态已支付
+deactivate zhifu
+
+system -> system: 查找满足条件的快递员
+
+system -> courier: 发送通知
+
+courier -> system: 抢单
+
+system -> system: 确定抢单结果，订单状态已接单
+activate system
+deactivate system
+
+system -> courier: 发送快递单具体信息
+
+@enduml

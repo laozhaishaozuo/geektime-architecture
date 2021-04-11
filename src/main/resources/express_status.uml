@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+state "已创建" as created
+state "已支付" as paid
+state "已发布" as published
+state "已接单" as taken
+state "已收件" as accepted
+state "派送中" as inDelivery
+state "已送达" as picked
+state "已取消" as cancelled
+
+[*] --> created : 用户下单
+
+created --> cancelled : 用户取消
+created --> paid  : 支付
+
+paid --> published  : 订单匹配
+
+published --> taken : 快递员抢单
+
+taken --> accepted : 快递员取件
+
+accepted --> inDelivery : 快递员派送
+
+inDelivery --> picked : 收件人签收
+
+picked --> [*]
+
+@enduml
